@@ -57,6 +57,22 @@ rarray<double,1> sq_norm(rarray<complex<double>,1>& fhat){
   return normsq;
 }
 
+// This function calculates the correlation between two 1D rarrays via C_FG = <F,G> / sqrt(<F,F><G,G>)
+double correlation(rarray<double,1>& Fk,rarray<double,1>& Gk){
+  int f_size = Fk.extent(0); // they'll be the same size
+  double *A = new double[f_size]; // put in a way that cblas will work with
+  double *B = new double[f_size]; // put in a way that cblas will work with
+  for (int i=0; i<f_size; i++) A[i] = Fk[i];
+  for (int i=0; i<f_size; i++) B[i] = Gk[i];
+  // calculate inner products
+  double FG = cblas_ddot(f_size, A, 1, B, 1);
+  double FF = cblas_ddot(f_size, A, 1, A, 1);
+  double GG = cblas_ddot(f_size, B, 1, B, 1);
+  // C_FG = <F,G> / sqrt(<F,F><G,G>)
+  return (FG/(sqrt(FF*GG)));
+}
+
+
 
 int main(){
   
@@ -79,16 +95,7 @@ int main(){
   fhat = fft(f);
   Gk = sq_norm(fhat);
   
-  cout << Gk[3] << endl;
-  cout << Fk[3] << endl;
-  
-  double *A = new double[f_size]; // put in a way that cblas will work with
-  double *B = new double[f_size]; // put in a way that cblas will work with
-  for (int i=0; i<f_size; i++) A[i] = Fk[i];
-  for (int i=0; i<f_size; i++) B[i] = Gk[i];
-  cout << B[3] << endl;
-  // double cblas_ddot(const int N, const double *X, const int incX, const double *Y, const int incY);
-  double x = cblas_ddot(f_size, A, 1, B, 1);
+  double x = correlation(Fk, Gk);
   cout << x << endl;
     
   return 0;
