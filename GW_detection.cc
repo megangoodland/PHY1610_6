@@ -77,9 +77,9 @@ int main(){
   }
   
   // This identifies the detection files that make the 5 highest values in C
-  cout << max_element(C,C+n_detections) << endl;
+  cout << *max_element(C,C+n_detections) << endl;
     
   
-  cout << C << endl;
+  cout << *C << endl;
   return 0;
 }
