@@ -74,17 +74,18 @@ int main(){
     fhat = fft(f);
     Gk = sq_norm(fhat);
     C[i]=correlation(Fk, Gk); // Add to array that holds all of the correlation values
+    cout << C[i] << endl;
   }
   
   // This identifies the detection files that make the 5 highest values in C
   for (int i=0; i<5; i++){
-    cout << *max_element(C,C+n_detections) << endl; // find the max element in C
     int index = distance(C, find(C, C + n_detections, *max_element(C,C+n_detections))); // find the index of that max element
     cout << index << endl;
     C[index] = 0.0; // zero out the previous max element
-    
+    largest_C[i] = files[index]; // add filename that made current max C to largest_C rarray
   }
   
+  cout << largest_C << endl;
 
   return 0;
 }
