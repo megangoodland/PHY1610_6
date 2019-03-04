@@ -27,7 +27,8 @@
 #include <netcdf>
 #include <complex>
 #include <fftw3.h>
-#include <cmath> // for pow
+#include <string>
+#include <cmath> 
 #include "netCDF_reading.h"
 #include "rarray_math.h"
 #include <cblas.h>
@@ -39,25 +40,40 @@ int main(){
   
   // Initializing rarrays and constants
   const int f_size = get_f_size("GWprediction.nc"); // Only need to do this once because f is same size in all files
+  int n_detections = 32; // number of detections
   rarray<complex<double>,1> f(f_size); // initialize array to hold f
   rarray<complex<double>,1> fhat(f_size); // initialize array to hold fhat
   rarray<double,1> Fk(f_size); // initialize array to hold Fk
   rarray<double,1> Gk(f_size); // initialize array to hold Gk
+  rarray<double,1> C(n_detections); // array to hold correlation values
+  rarray<string,1> files(n_detections); // array to hold filenames of detections
   
-  // Fill f with data from netCDF file
-  f = get_f("GWprediction.nc");
-  // Get fast fourier transform
-  fhat = fft(f);
-  // Get Fk
-  Fk = sq_norm(fhat);
+  f = get_f("GWprediction.nc"); // Fill f with data from netCDF file
+  fhat = fft(f); // Get fast fourier transform
+  Fk = sq_norm(fhat); // Get Fk
 
-  // Get Gk with same steps, overwriting f and fhat
-  f = get_f("detection01.nc");
-  fhat = fft(f);
-  Gk = sq_norm(fhat);
+  // This loop fills an rarray with all of the detection filenames
+  for (int i=0; i<(n_detections); i++){
+    int n = i+1;
+    if (n<10){
+        string filename = "detection0" + to_string(n) + ".nc";
+        files[i]=filename; // Add to rarray that holds all of the file names
+    }
+    if (n>=10){
+        string filename = "detection" + to_string(n) + ".nc";
+        files[i]=filename; // Add to rarray that holds all of the file names    
+    }
+  }
   
-  double x = correlation(Fk, Gk);
-  cout << x << endl;
-    
+  // This loop calculates every correlation and saves it in array C
+  for (int i=0; i<(n_detections); i++){
+    // Get Gk with same steps as Fk, overwriting f and fhat
+    f = get_f(files[i]);
+    fhat = fft(f);
+    Gk = sq_norm(fhat);
+    C[i]=correlation(Fk, Gk); // Add to rarray that holds all of the correlation values
+  }
+  
+  cout << C << endl;
   return 0;
 }
