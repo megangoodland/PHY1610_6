@@ -46,8 +46,8 @@ int main(){
   rarray<complex<double>,1> fhat(f_size); // initialize array to hold fhat
   rarray<double,1> Fk(f_size); // initialize array to hold Fk
   rarray<double,1> Gk(f_size); // initialize array to hold Gk
-  rarray<double,1> C(n_detections); // array to hold correlation values
   rarray<string,1> files(n_detections); // array to hold filenames of detections
+  double C[n_detections]; // array to hold correlation values
   rarray<string,1> largest_C(5); // array to hold filenames of detections that make the highest correlation values
   
   f = get_f("GWprediction.nc"); // Fill f with data from netCDF file
@@ -73,12 +73,11 @@ int main(){
     f = get_f(files[i]);
     fhat = fft(f);
     Gk = sq_norm(fhat);
-    C[i]=correlation(Fk, Gk); // Add to rarray that holds all of the correlation values
+    C[i]=correlation(Fk, Gk); // Add to array that holds all of the correlation values
   }
   
   // This identifies the detection files that make the 5 highest values in C
-  double C2[] = C;
-  cout << max_element(C2,C2+n_detections) << endl;
+  cout << max_element(C,C+n_detections) << endl;
     
   
   cout << C << endl;
