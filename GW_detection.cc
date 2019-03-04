@@ -78,9 +78,8 @@ int main(){
   
   // This identifies the detection files that make the 5 highest values in C
   for (int i=0; i<5; i++){
-    double max = max_element(C,C+n_detections); // find the max element in C
-    cout << *max << endl;
-    int index = distance(C, find(C, C + n_detections, max)); // find the index of that max element
+    cout << *max_element(C,C+n_detections) << endl; // find the max element in C
+    int index = distance(C, find(C, C + n_detections, *max_element(C,C+n_detections))); // find the index of that max element
     cout << index << endl;
     C[index] = 0.0; // zero out the previous max element
     
