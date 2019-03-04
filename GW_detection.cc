@@ -74,7 +74,7 @@ int main(){
     fhat = fft(f);
     Gk = sq_norm(fhat);
     C[i]=correlation(Fk, Gk); // Add to array that holds all of the correlation values
-    cout << C[i] << endl;
+    cout << i+1 << "  " << C[i] << endl;
   }
   
   // This identifies the detection files that make the 5 highest values in C
