@@ -29,6 +29,7 @@
 #include <fftw3.h>
 #include <string>
 #include <cmath> 
+#include <algorithm>
 #include "netCDF_reading.h"
 #include "rarray_math.h"
 #include <cblas.h>
@@ -75,8 +76,9 @@ int main(){
     C[i]=correlation(Fk, Gk); // Add to rarray that holds all of the correlation values
   }
   
-  // This loop identifies the detection files that make the 5 highest values in C
-  cout << max_element(C,C+n_detections) << endl;
+  // This identifies the detection files that make the 5 highest values in C
+  double C2[] = C;
+  cout << max_element(C2,C2+n_detections) << endl;
     
   
   cout << C << endl;
