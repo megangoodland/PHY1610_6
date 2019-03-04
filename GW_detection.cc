@@ -47,6 +47,7 @@ int main(){
   rarray<double,1> Gk(f_size); // initialize array to hold Gk
   rarray<double,1> C(n_detections); // array to hold correlation values
   rarray<string,1> files(n_detections); // array to hold filenames of detections
+  rarray<string,1> largest_C(5); // array to hold filenames of detections that make the highest correlation values
   
   f = get_f("GWprediction.nc"); // Fill f with data from netCDF file
   fhat = fft(f); // Get fast fourier transform
@@ -73,6 +74,10 @@ int main(){
     Gk = sq_norm(fhat);
     C[i]=correlation(Fk, Gk); // Add to rarray that holds all of the correlation values
   }
+  
+  // This loop identifies the detection files that make the 5 highest values in C
+  cout << max_element(C,C+n_detections) << endl;
+    
   
   cout << C << endl;
   return 0;
